@@ -18,3 +18,18 @@ class Post(models.Model):
     user_sleep = models.IntegerField()
     def __str__(self):
         return f"{self.user.username} - {self.date}"
+
+
+# 달성률 필드
+    
+    def achievement_rate(self):
+        total = 0
+        if self.medication_today == self.user_medications:
+            total += 25
+        if self.exercise_time == self.user_exercises:
+            total += 25
+        if self.meal_count == self.user_meals:
+            total += 25
+        if self.sleep_time == self.user_sleep:
+            total += 25
+        return total

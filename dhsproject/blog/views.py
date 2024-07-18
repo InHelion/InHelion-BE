@@ -9,13 +9,15 @@ class PostCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         # 현재 사용자의 정보를 저장합니다.
-        serializer.save(
+        post = serializer.save(
             user=self.request.user,
             user_meals=self.request.user.meals,
             user_exercises=self.request.user.exercises,
             user_medications=self.request.user.medications,
             user_sleep=self.request.user.sleep
         )
+        post.achievement_rate_value = post.achievement_rate()
+        post.save()
 
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()
