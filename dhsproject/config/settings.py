@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     #기능 앱 추가
     'users',
     'dhs',
+    'blog',
 ]
 
 MIDDLEWARE = [
