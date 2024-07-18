@@ -15,10 +15,11 @@ dhs project - 백엔드 깃헙입니다.
 ## (api4) 회원 정보 수정
 ![회원 정보 수정](/postman/회원정보수정.png)  
 
+## (api5) 달성률 표시 (1) 다 지켰을때
+![달성률1](postman/ALL.png)
 
-
-
-
+## (api6) 달성률 표시 (2) 특정 항목초과
+![달성률2](postman/LESS.png)
 
 
 
