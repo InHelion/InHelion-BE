@@ -21,28 +21,18 @@ class Post(models.Model):
 
 
 # 달성률 필드
-    
     def achievement_rate(self):
         total = 0
-        # 약
-        if self.user_medications > 0:
-            medication_rate = (self.medication_today / self.user_medications) * 25
-            total += min(medication_rate, 25) 
+        if self.medication_today == self.user_medications:
+            total += 25
+        if self.exercise_time == self.user_exercises:
+            total += 25
+        if self.meal_count == self.user_meals:
+            total += 25
+        if self.sleep_time == self.user_sleep:
+            total += 25
         
-        # 운동
-        if self.user_exercises > 0:
-            exercise_rate = (self.exercise_time / self.user_exercises) * 25
-            total += min(exercise_rate, 25) 
-        
-        # 끼니
-        if self.user_meals > 0:
-            meal_rate = (self.meal_count / self.user_meals) * 25
-            total += min(meal_rate, 25) 
-        
-        # 수면
-        if self.user_sleep > 0:
-            sleep_rate = (self.sleep_time / self.user_sleep) * 25
-            total += min(sleep_rate, 25)
-          
+        return total
 
-        return round(total, 2)
+
+    

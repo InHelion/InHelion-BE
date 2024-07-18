@@ -137,6 +137,6 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'users.CustomUser'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Access 토큰의 유효 기간
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1)
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=7),  # Access 토큰의 유효 기간
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7)
 }
