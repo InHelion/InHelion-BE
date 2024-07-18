@@ -42,6 +42,7 @@ class Post(models.Model):
         # 수면
         if self.user_sleep > 0:
             sleep_rate = (self.sleep_time / self.user_sleep) * 25
-            total += min(sleep_rate, 25)  
+            total += min(sleep_rate, 25)
+          
 
         return round(total, 2)
