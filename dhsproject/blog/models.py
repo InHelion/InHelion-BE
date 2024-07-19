@@ -25,11 +25,11 @@ class Post(models.Model):
         total = 0
         if self.medication_today == self.user_medications:
             total += 25
-        if self.exercise_time == self.user_exercises:
+        if self.exercise_time >= self.user_exercises:
             total += 25
         if self.meal_count == self.user_meals:
             total += 25
-        if self.sleep_time == self.user_sleep:
+        if self.sleep_time <= self.user_sleep+1 and self.sleep_time >= self.user_sleep-1:
             total += 25
         
         return total
