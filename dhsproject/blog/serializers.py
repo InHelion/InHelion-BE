@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post
+from .models import Post, Comment
 
 class PostCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,7 +19,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     def get_achievement_rate(self, obj):
         return obj.achievement_rate()
-    
+
 ###메인페이지(date 기준 사용자 모든 게시물 조회)용 시리얼라이저
 class PostListSerializer(serializers.ModelSerializer):
     achievement_rate = serializers.SerializerMethodField()
@@ -30,3 +30,19 @@ class PostListSerializer(serializers.ModelSerializer):
 
     def get_achievement_rate(self, obj):
         return obj.achievement_rate()
+
+   
+ 
+class CommentSerializer(serializers.ModelSerializer):
+    protector = serializers.BooleanField(required=False)
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'post_id', 'content', 'protector', 'created_at']
+        read_only_field = ['user_id', 'created_at']
+
+    def create(self, validated_data):
+        request = self.context.get('request', None)
+        if request and hasattr(request, 'user'):
+            validated_data['user'] = request.user
+        return super().create(validated_data)

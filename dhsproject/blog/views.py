@@ -1,6 +1,7 @@
+
 from rest_framework import generics, permissions, status
-from .models import Post
-from .serializers import PostCreateSerializer, PostDetailSerializer, PostListSerializer
+from .models import Post, Comment
+from .serializers import PostCreateSerializer, PostDetailSerializer, PostListSerializer,CommentSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -30,6 +31,27 @@ class PostListView(generics.ListAPIView):
     def get_queryset(self):
         return Post.objects.filter(user=self.request.user).order_by('-date')
 
+class CommentCreateView(generics.CreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        post_id = self.kwargs.get('post_id')
+        post = Post.objects.get(id=post_id)
+        comment = serializer.save(user=self.request.user, post=post)
+        if comment.protector:
+            comment.content = f" [보호자] | {comment.content}"
+        comment.save()
+
+class CommentListView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        post_id = self.kwargs['post_id']
+        return Comment.objects.filter(post_id=post_id).order_by('created_at')
+
 ###메인페이지(date기준 오름차순 사용자의 모든 게시물 조회)
 class UserPostListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -47,3 +69,4 @@ class PostDetailView(APIView):
         post = get_object_or_404(Post, id=post_id, user=request.user)
         serializer = PostDetailSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
