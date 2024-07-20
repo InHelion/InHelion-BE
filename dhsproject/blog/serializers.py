@@ -20,6 +20,19 @@ class PostDetailSerializer(serializers.ModelSerializer):
     def get_achievement_rate(self, obj):
         return obj.achievement_rate()
 
+###메인페이지(date 기준 사용자 모든 게시물 조회)용 시리얼라이저
+class PostListSerializer(serializers.ModelSerializer):
+    achievement_rate = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Post
+        fields = ('id', 'date', 'medication_today', 'exercise_time', 'meal_count', 'sleep_time', 'daily_summary', 'achievement_rate')
+
+    def get_achievement_rate(self, obj):
+        return obj.achievement_rate()
+
+   
+ 
 class CommentSerializer(serializers.ModelSerializer):
     protector = serializers.BooleanField(required=False)
 
