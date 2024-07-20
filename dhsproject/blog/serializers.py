@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post
+from .models import Post, Comment
 
 class PostCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +19,17 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     def get_achievement_rate(self, obj):
         return obj.achievement_rate()
+
+class CommentSerializer(serializers.ModelSerializer):
+    protector = serializers.BooleanField(required=False)
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'post_id', 'content', 'protector', 'created_at']
+        read_only_field = ['user_id', 'created_at']
+
+    def create(self, validated_data):
+        request = self.context.get('request', None)
+        if request and hasattr(request, 'user'):
+            validated_data['user'] = request.user
+        return super().create(validated_data)
