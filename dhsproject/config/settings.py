@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #기능 앱 추가
     'users',
-    'dhs',
     'blog',
     'rest_framework'
 ]
