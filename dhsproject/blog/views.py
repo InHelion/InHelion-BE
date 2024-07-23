@@ -44,13 +44,16 @@ class CommentCreateView(generics.CreateAPIView):
             comment.content = f" [보호자] | {comment.content}"
         comment.save()
 
+
+###한페이지뷰(특정 한페이지의 모든 댓글 조회(생성시간 기준 정렬))
 class CommentListView(generics.ListAPIView):
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         post_id = self.kwargs['post_id']
-        return Comment.objects.filter(post_id=post_id).order_by('created_at')
+        post = get_object_or_404(Post, id=post_id, user=self.request.user)
+        return Comment.objects.filter(post=post).order_by('created_at')
 
 ###메인페이지(date기준 오름차순 사용자의 모든 게시물 조회)
 class UserPostListView(APIView):
@@ -70,3 +73,11 @@ class PostDetailView(APIView):
         serializer = PostDetailSerializer(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+###게시물삭제
+class PostDeleteView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, post_id):
+        post = get_object_or_404(Post, id=post_id, user=request.user)
+        post.delete()
+        return Response({"message": "게시물이 성공적으로 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
