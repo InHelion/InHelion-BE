@@ -52,18 +52,16 @@ class CommentListView(generics.ListAPIView):
         post_id = self.kwargs['post_id']
         return Comment.objects.filter(post_id=post_id).order_by('created_at')
 
-### 메인페이지(date기준 오름차순 사용자의 모든 게시물 조회) + 최근 10일 평균 달성률 추가
+### 메인페이지(date기준 오름차순 사용자의 모든 게시물 조회) + 최근 10개의 게시물 기준 평균 달성률 추가
 class UserPostListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        posts = Post.objects.filter(user=request.user).order_by('date')
+        posts = Post.objects.filter(user=request.user).order_by('-date')
         serializer = PostListSerializer(posts, many=True)
 
-        # 최근 10일 내의 평균 달성률 계산
-        today = datetime.today().date()
-        ten_days_ago = today - timedelta(days=10)
-        recent_posts = Post.objects.filter(user=request.user, date__range=[ten_days_ago, today])
+        # 최근 10개의 게시물 기준 평균 달성률 계산
+        recent_posts = posts[:10]  # 최근 10개의 게시물을 가져옴
 
         total_achievement_rate = 0
         for post in recent_posts:
@@ -77,7 +75,7 @@ class UserPostListView(APIView):
             'posts': serializer.data,
             'TenDaysAverage': average_achievement_rate
         }, status=status.HTTP_200_OK)
-
+    
 ###한페이지뷰(사용자의 특정 한 페이지 조회 (게시물 id 이용))
 class PostDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
