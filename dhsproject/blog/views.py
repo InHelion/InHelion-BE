@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
+from rest_framework.exceptions import PermissionDenied
 
 class PostCreateView(generics.CreateAPIView):
     queryset = Post.objects.all()
@@ -55,6 +56,28 @@ class CommentListView(generics.ListAPIView):
         post = get_object_or_404(Post, id=post_id, user=self.request.user)
         return Comment.objects.filter(post=post).order_by('created_at')
 
+class CommentUpdateView(generics.UpdateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+    def get_object(self):
+        comment = super().get_object()
+        if comment.user != self.request.user:
+            raise PermissionDenied("수정 권한이 없습니다.")
+        return comment
+    
+class CommentDeleteView(generics.DestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        comment = super().get_object()
+        if comment.user != self.request.user:
+            raise PermissionDenied("삭제 권한이 없습니다.")
+        return comment
+    
 ### 메인페이지(date기준 오름차순 사용자의 모든 게시물 조회) + 최근 10개의 게시물 기준 평균 달성률 추가
 class UserPostListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
