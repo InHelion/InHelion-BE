@@ -78,6 +78,11 @@ class CommentDeleteView(generics.DestroyAPIView):
             raise PermissionDenied("삭제 권한이 없습니다.")
         return comment
     
+    def delete(self, request, *args, **kwargs):
+        comment = self.get_object()
+        self.perform_destroy(comment)
+        return Response({"message": "삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+    
 ### 메인페이지(date기준 오름차순 사용자의 모든 게시물 조회) + 최근 10개의 게시물 기준 평균 달성률 추가
 class UserPostListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
