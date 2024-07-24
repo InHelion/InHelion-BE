@@ -15,6 +15,9 @@ dhs project - 백엔드 깃헙입니다.
 ## (api4) 회원 정보 수정
 ![회원 정보 수정](/postman/회원정보수정.png)  
 
+## (api5) 로그아웃
+![로그아웃](<postman/로그아웃 성공.png>)
+
 # BLOG APP
 ## (api1-1) 달성률 표시 (1) 다 지켰을때
 ![달성률1](postman/ALL.png)
@@ -36,9 +39,13 @@ dhs project - 백엔드 깃헙입니다.
 ## (api4) 특정 게시물 삭제
 ![특정게시물삭제](postman/게시물 삭제.png)
 
+## (api5-1) 댓글 생성
+![댓글 생성](<postman/댓글 생성.png>)
 
-
-
+## (api5-2) 댓글 수정
+![댓글 수정 전](<postman/댓글 수정 전.png>)
+![댓글 수정 중](<postman/댓글 수정 중.png>)
+![댓글 수정 후](<postman/댓글 수정 후.png>)
 
 
 
