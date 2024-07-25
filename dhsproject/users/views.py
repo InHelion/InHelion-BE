@@ -1,11 +1,12 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from django.shortcuts import get_object_or_404
 from .models import CustomUser
 from .serializers import UserSerializer
@@ -40,12 +41,16 @@ def login(request):
         'username': user.username
     }, status=status.HTTP_200_OK)
 
-@api_view(['GET'])
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def logout(request):
-    response = Response({"message": "Logout success"}, status=status.HTTP_202_ACCEPTED)
-    response.delete_cookie("accessToken")
-    response.delete_cookie("refreshToken")
-    return response
+    identifier = request.data.get('identifier')
+    password = request.data.get('password')
+
+    user = authenticate(username=identifier, password=password)
+    if user is None:
+        return Response({'message': '아이디 또는 비밀번호가 일치하지 않습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+    return Response({"message": "로그아웃 되었습니다."}, status=status.HTTP_205_RESET_CONTENT)
 
 #####사용자 정보 조회, 정보 수정#####
 class ProfileUpdateAPIView(APIView):
