@@ -88,25 +88,27 @@ class UserPostListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        posts = Post.objects.filter(user=request.user).order_by('-date')
+        # 게시물을 날짜 기준 오름차순으로 정렬
+        posts = Post.objects.filter(user=request.user).order_by('date')
         serializer = PostListSerializer(posts, many=True)
 
         # 최근 10개의 게시물 기준 평균 달성률 계산
-        recent_posts = posts[:10]  # 최근 10개의 게시물을 가져옴
+        recent_posts = posts[::-1][:10]  # 최근 10개의 게시물을 가져옴 (오름차순 정렬 후 슬라이싱)
 
         total_achievement_rate = 0
         for post in recent_posts:
             achievement_rate = post.achievement_rate()
             total_achievement_rate += achievement_rate
 
-        count = recent_posts.count()
+        count = len(recent_posts)
         average_achievement_rate = round(total_achievement_rate / count, 2) if count > 0 else 0
 
         return Response({
             'posts': serializer.data,
             'TenDaysAverage': average_achievement_rate
         }, status=status.HTTP_200_OK)
-    
+
+
 ###한페이지뷰(사용자의 특정 한 페이지 조회 (게시물 id 이용))
 class PostDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
