@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     #기능 앱 추가
     'users',
     'blog',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 MIDDLEWARE = [
@@ -137,5 +138,6 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=7),  # Access 토큰의 유효 기간
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'BLACKLIST_AFTER_ROTATION': True
 }
