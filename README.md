@@ -30,6 +30,10 @@ dhs project - 백엔드 깃헙입니다.
 
 일부러 22일, 18일, 23일, 17일 이런식으로 순서대로 게시물 생성후, DATE 입력값 기준으로 오름차순 정렬 출력되는지 검증 완료하였습니다.
 
+## (api2-1) '보고싶어' 버튼 이메일 발송
+![이메일 발송](https://github.com/user-attachments/assets/ba5aa055-ed98-413c-b31d-1ddc76f028c0)
+![이메일 확인](https://github.com/user-attachments/assets/2f02e186-c4ea-44a8-b79f-0d01c0f79139)
+
 ## (api3-1) 특정 게시물 조회 : 로그인한 사용자의 특정 게시물 조회 (게시물 ID 이용)
 ![특정게시물조회](postman/특정게시물조회(id값).png)
 
@@ -50,6 +54,7 @@ dhs project - 백엔드 깃헙입니다.
 ## (api6) 댓글 삭제
 ![댓글 삭제](https://github.com/user-attachments/assets/8def7d07-f061-4e21-90be-a5a86176105f)
 ![삭제 후 목록](https://github.com/user-attachments/assets/347f3467-03da-4637-9ced-e5da4a71adcc)
+
 
 
 
