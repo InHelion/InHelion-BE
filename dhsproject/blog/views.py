@@ -1,9 +1,13 @@
 from rest_framework import generics, permissions, status
 from .models import Post, Comment
+from users.models import CustomUser
+from django.contrib.auth.models import User
 from .serializers import PostCreateSerializer, PostDetailSerializer, PostListSerializer,CommentSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.core.mail import send_mail
+from django.http import HttpResponse
 from datetime import datetime, timedelta
 from rest_framework.exceptions import PermissionDenied
 
@@ -107,6 +111,20 @@ class UserPostListView(APIView):
             'posts': serializer.data,
             'TenDaysAverage': average_achievement_rate
         }, status=status.HTTP_200_OK)
+
+def miss_email_notification(request, user_id):
+        try:
+            user_profile = get_object_or_404(CustomUser, id=user_id)
+        except CustomUser.DoesNotExist:
+            return HttpResponse('사용자가 존재하지 않습니다.', status=404)
+        send_mail(
+            '보고싶어 알림',
+            '이거 보면 연락줘라',
+            'kmy737785@gmail.com',
+            [user_profile.email],
+            fail_silently=False,
+        )
+        return HttpResponse('보고싶어 알림이 성공적으로 전송되었습니다.')
 
 
 ###한페이지뷰(사용자의 특정 한 페이지 조회 (게시물 id 이용))
