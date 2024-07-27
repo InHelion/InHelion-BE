@@ -32,7 +32,7 @@ dhs project - 백엔드 깃헙입니다.
 
 ## (api2-1) '보고싶어' 버튼 이메일 발송
 ![이메일 발송](https://github.com/user-attachments/assets/ba5aa055-ed98-413c-b31d-1ddc76f028c0)
-![이메일 확인](https://github.com/user-attachments/assets/2f02e186-c4ea-44a8-b79f-0d01c0f79139)
+![이메일 확인](https://github.com/user-attachments/assets/8a824f79-ebb2-42c4-959e-7bb85ff5eee4)
 
 ## (api3-1) 특정 게시물 조회 : 로그인한 사용자의 특정 게시물 조회 (게시물 ID 이용)
 ![특정게시물조회](postman/특정게시물조회(id값).png)
