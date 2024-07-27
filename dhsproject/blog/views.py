@@ -112,20 +112,27 @@ class UserPostListView(APIView):
             'TenDaysAverage': average_achievement_rate
         }, status=status.HTTP_200_OK)
 
-def miss_email_notification(request, user_id):
-        try:
-            user_profile = get_object_or_404(CustomUser, id=user_id)
-        except CustomUser.DoesNotExist:
-            return HttpResponse('사용자가 존재하지 않습니다.', status=404)
+### 보고싶어 이메일 발송
+class MissEmailNotificationView(APIView):
+    def get(self, request, user_id):
+        user_profile = get_object_or_404(CustomUser, id=user_id)
+        
+        user_name = user_profile.username  
+
+        email_subject = '< 다했슈로부터 보고싶어 알림이 도착했습니다! >'
+        email_message = f'{user_name}님께서 보호자분의 연락을 기다리고 있습니다.\n빠른 연락을 부탁드립니다 :) \n\nfrom 다했슈'
+        from_email = 'kmy737785@gmail.com' #발송할 비즈니스 이메일로 변경해야함
+        
+        recipient_list = [user_profile.email]
+
         send_mail(
-            '보고싶어 알림',
-            '이거 보면 연락줘라',
-            'kmy737785@gmail.com',
-            [user_profile.email],
+            email_subject,
+            email_message,
+            from_email,
+            recipient_list,
             fail_silently=False,
         )
-        return HttpResponse('보고싶어 알림이 성공적으로 전송되었습니다.')
-
+        return Response({'message': '보고싶어 알림이 성공적으로 전송되었습니다.'})
 
 ###한페이지뷰(사용자의 특정 한 페이지 조회 (게시물 id 이용))
 class PostDetailView(APIView):

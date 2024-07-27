@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import PostCreateView, PostListView, CommentCreateView, CommentListView, CommentUpdateView, CommentDeleteView
-from .views import UserPostListView, PostDetailView, PostDeleteView
-from . import views
+from .views import UserPostListView, PostDetailView, PostDeleteView, MissEmailNotificationView
 
 urlpatterns = [
     path('create/', PostCreateView.as_view(), name='post-create'),
@@ -13,5 +12,5 @@ urlpatterns = [
     path('<int:post_id>/comments/create/', CommentCreateView.as_view(), name='comment-create'), # 댓글 생성
     path('<int:pk>/comments/update/', CommentUpdateView.as_view(), name='comment-update'), # 댓글 수정
     path('<int:pk>/comments/delete/', CommentDeleteView.as_view(), name='comment-delete'), # 댓글 삭제
-    path('miss_email/<int:user_id>/', views.miss_email_notification, name='miss_email_notification') # 보고싶어 이메일
+    path('miss_email/<int:user_id>/', MissEmailNotificationView.as_view(), name='miss_email_notification') # 보고싶어 이메일
 ]
