@@ -10,6 +10,11 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from datetime import datetime, timedelta
 from rest_framework.exceptions import PermissionDenied
+from django.conf import settings
+from django.core.mail import EmailMessage
+import smtplib
+from datetime import datetime
+
 
 class PostCreateView(generics.CreateAPIView):
     queryset = Post.objects.all()
@@ -17,16 +22,49 @@ class PostCreateView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        # 현재 사용자의 정보를 저장합니다.
-        post = serializer.save(
-            user=self.request.user,
-            user_meals=self.request.user.meals,
-            user_exercises=self.request.user.exercises,
-            user_medications=self.request.user.medications,
-            user_sleep=self.request.user.sleep
+        user = self.request.user
+        
+        post = Post(
+            user=user,
+            date=serializer.validated_data.get('date'),
+            medication_today=serializer.validated_data.get('medication_today'),
+            exercise_time=serializer.validated_data.get('exercise_time'),
+            meal_count=serializer.validated_data.get('meal_count'),
+            sleep_time=serializer.validated_data.get('sleep_time'),
+            daily_summary=serializer.validated_data.get('daily_summary'),
+            user_meals=user.meals,
+            user_exercises=user.exercises,
+            user_medications=user.medications,
+            user_sleep=user.sleep
         )
+        
         post.achievement_rate_value = post.achievement_rate()
         post.save()
+
+        # 달성률이 100%가 되지 않으면 이메일을 보냄
+        if post.achievement_rate_value < 100:
+            self.send_achievement_email(user, post)
+
+    def send_achievement_email(self, user, post):
+        subject = f"(다햇슈 알림) {user.username}님의 달성률이 100% 미만입니다."
+        message = (
+            f"{user.username}님의 {post.date.strftime('%Y-%m-%d')}일자 달성률이 100%를 만족하지 못했습니다.\n\n"
+            "보호자님의 확인을 부탁드립니다 :)\n\n"
+            "from 다햇슈"
+        )
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [user.email]
+
+        # 이메일을 생성하고 인코딩을 설정
+        email = EmailMessage(subject, message, from_email, recipient_list)
+        email.content_subtype = "plain"  # 이메일 본문을 텍스트로 설정
+        email.encoding = 'utf-8'  # 인코딩 설정
+
+        try:
+            email.send()
+            print(f"Email sent to {user.email}")
+        except smtplib.SMTPException as e:
+            print("Error: unable to send email", e)
 
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()
@@ -121,7 +159,7 @@ class MissEmailNotificationView(APIView):
 
         email_subject = '< 다했슈로부터 보고싶어 알림이 도착했습니다! >'
         email_message = f'{user_name}님께서 보호자님의 연락을 기다리고 있습니다.\n빠른 연락을 부탁드립니다 :)\n\nfrom 다했슈'
-        from_email = 'kmy737785@gmail.com' #발송할 비즈니스 이메일로 변경해야함
+        from_email = 'dahaessyu8@gmail.com' #발송할 비즈니스 이메일
         
         recipient_list = [user_profile.email]
 
