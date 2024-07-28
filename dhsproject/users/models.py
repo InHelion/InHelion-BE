@@ -32,3 +32,6 @@ class CustomUser(AbstractUser):
         help_text='Specific permissions for this user.',
         related_query_name='customuser'
     )
+
+    def __str__(self):
+        return self.username.username
