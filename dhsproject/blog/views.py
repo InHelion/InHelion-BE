@@ -157,8 +157,8 @@ class MissEmailNotificationView(APIView):
         
         user_name = user_profile.username  
 
-        email_subject = '< 다했슈로부터 보고싶어 알림이 도착했습니다! >'
-        email_message = f'{user_name}님께서 보호자님의 연락을 기다리고 있습니다.\n빠른 연락을 부탁드립니다 :)\n\nfrom 다했슈'
+        email_subject = '< 다햇슈로부터 보고싶어 알림이 도착했습니다! >'
+        email_message = f'{user_name}님께서 보호자님의 연락을 기다리고 있습니다.\n빠른 연락을 부탁드립니다 :)\n\nfrom 다햇슈'
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [user_profile.email]
 
