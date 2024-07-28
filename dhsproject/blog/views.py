@@ -13,6 +13,7 @@ from rest_framework.exceptions import PermissionDenied
 from django.conf import settings
 from django.core.mail import EmailMessage
 import smtplib
+from datetime import datetime
 
 
 class PostCreateView(generics.CreateAPIView):
@@ -22,25 +23,34 @@ class PostCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
-        post = serializer.save(
+        
+        post = Post(
             user=user,
+            date=serializer.validated_data.get('date'),
+            medication_today=serializer.validated_data.get('medication_today'),
+            exercise_time=serializer.validated_data.get('exercise_time'),
+            meal_count=serializer.validated_data.get('meal_count'),
+            sleep_time=serializer.validated_data.get('sleep_time'),
+            daily_summary=serializer.validated_data.get('daily_summary'),
             user_meals=user.meals,
             user_exercises=user.exercises,
             user_medications=user.medications,
             user_sleep=user.sleep
         )
+        
         post.achievement_rate_value = post.achievement_rate()
         post.save()
-        
+
         # 달성률이 100%가 되지 않으면 이메일을 보냄
         if post.achievement_rate_value < 100:
-            self.send_achievement_email(user)
+            self.send_achievement_email(user, post)
 
-    def send_achievement_email(self, user):
-        subject = "하루 달성률이 모두 채워지지 않았습니다 0_0"
+    def send_achievement_email(self, user, post):
+        subject = f"(다햇슈 알림) {user.username}님의 달성률이 100% 미만입니다."
         message = (
-            "안녕하세요 다했슈입니다. 목표로 설정하신 하루 달성률이 100%가 되지않았어요 ㅠ_ㅠ...\n"
-            "그러면 제 마음이 너무 아파용...내일은 모두 달성해보록 우리 파이팅해요!!! 아자!!!"
+            f"{user.username}님의 {post.date.strftime('%Y-%m-%d')}일자 달성률이 100%를 만족하지 못했습니다.\n\n"
+            "보호자님의 확인을 부탁드립니다 :)\n\n"
+            "from 다햇슈"
         )
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [user.email]
@@ -52,9 +62,30 @@ class PostCreateView(generics.CreateAPIView):
 
         try:
             email.send()
+            print(f"Email sent to {user.email}")
         except smtplib.SMTPException as e:
             print("Error: unable to send email", e)
 
+    def send_achievement_email(self, user, post):
+        subject = f"(다햇슈 알림) {user.username}님의 달성률이 100% 미만입니다."
+        message = (
+            f"{user.username}님의 {post.date.strftime('%Y-%m-%d')}일자 달성률이 100%를 만족하지 못했습니다.\n\n"
+            "보호자님의 확인을 부탁드립니다 :)\n\n"
+            "from 다햇슈"
+        )
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [user.email]
+
+        # 이메일을 생성하고 인코딩을 설정
+        email = EmailMessage(subject, message, from_email, recipient_list)
+        email.content_subtype = "plain"  # 이메일 본문을 텍스트로 설정
+        email.encoding = 'utf-8'  # 인코딩 설정
+
+        try:
+            email.send()
+            print(f"Email sent to {user.email}")
+        except smtplib.SMTPException as e:
+            print("Error: unable to send email", e)
 
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()

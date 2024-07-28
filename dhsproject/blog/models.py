@@ -16,6 +16,7 @@ class Post(models.Model):
     user_exercises = models.IntegerField()
     user_medications = models.IntegerField()
     user_sleep = models.IntegerField()
+    
     def __str__(self):
         return f"{self.user.username} - {self.date}"
 
@@ -29,7 +30,7 @@ class Post(models.Model):
             total += 25
         if self.meal_count == self.user_meals:
             total += 25
-        if self.sleep_time <= self.user_sleep+1 and self.sleep_time >= self.user_sleep-1:
+        if self.user_sleep - 1 <= self.sleep_time <= self.user_sleep + 1:
             total += 25
         
         return total
