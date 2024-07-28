@@ -39,7 +39,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'post_id', 'content', 'protector', 'created_at']
-        read_only_field = ['user_id', 'created_at']
+        read_only_field = ['user', 'created_at']
 
     def create(self, validated_data):
         request = self.context.get('request', None)
