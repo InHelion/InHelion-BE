@@ -6,6 +6,10 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
 from rest_framework.exceptions import PermissionDenied
+from django.conf import settings
+from django.core.mail import EmailMessage
+import smtplib
+
 
 class PostCreateView(generics.CreateAPIView):
     queryset = Post.objects.all()
@@ -13,16 +17,40 @@ class PostCreateView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        # 현재 사용자의 정보를 저장합니다.
+        user = self.request.user
         post = serializer.save(
-            user=self.request.user,
-            user_meals=self.request.user.meals,
-            user_exercises=self.request.user.exercises,
-            user_medications=self.request.user.medications,
-            user_sleep=self.request.user.sleep
+            user=user,
+            user_meals=user.meals,
+            user_exercises=user.exercises,
+            user_medications=user.medications,
+            user_sleep=user.sleep
         )
         post.achievement_rate_value = post.achievement_rate()
         post.save()
+        
+        # 달성률이 100%가 되지 않으면 이메일을 보냄
+        if post.achievement_rate_value < 100:
+            self.send_achievement_email(user)
+
+    def send_achievement_email(self, user):
+        subject = "하루 달성률이 모두 채워지지 않았습니다 0_0"
+        message = (
+            "안녕하세요 다했슈입니다. 목표로 설정하신 하루 달성률이 100%가 되지않았어요 ㅠ_ㅠ...\n"
+            "그러면 제 마음이 너무 아파용...내일은 모두 달성해보록 우리 파이팅해요!!! 아자!!!"
+        )
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [user.email]
+
+        # 이메일을 생성하고 인코딩을 설정
+        email = EmailMessage(subject, message, from_email, recipient_list)
+        email.content_subtype = "plain"  # 이메일 본문을 텍스트로 설정
+        email.encoding = 'utf-8'  # 인코딩 설정
+
+        try:
+            email.send()
+        except smtplib.SMTPException as e:
+            print("Error: unable to send email", e)
+
 
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()
