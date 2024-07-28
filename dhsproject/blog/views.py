@@ -66,27 +66,6 @@ class PostCreateView(generics.CreateAPIView):
         except smtplib.SMTPException as e:
             print("Error: unable to send email", e)
 
-    def send_achievement_email(self, user, post):
-        subject = f"(다햇슈 알림) {user.username}님의 달성률이 100% 미만입니다."
-        message = (
-            f"{user.username}님의 {post.date.strftime('%Y-%m-%d')}일자 달성률이 100%를 만족하지 못했습니다.\n\n"
-            "보호자님의 확인을 부탁드립니다 :)\n\n"
-            "from 다햇슈"
-        )
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [user.email]
-
-        # 이메일을 생성하고 인코딩을 설정
-        email = EmailMessage(subject, message, from_email, recipient_list)
-        email.content_subtype = "plain"  # 이메일 본문을 텍스트로 설정
-        email.encoding = 'utf-8'  # 인코딩 설정
-
-        try:
-            email.send()
-            print(f"Email sent to {user.email}")
-        except smtplib.SMTPException as e:
-            print("Error: unable to send email", e)
-
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
