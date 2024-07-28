@@ -1,9 +1,13 @@
 from rest_framework import generics, permissions, status
 from .models import Post, Comment
+from users.models import CustomUser
+from django.contrib.auth.models import User
 from .serializers import PostCreateSerializer, PostDetailSerializer, PostListSerializer,CommentSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.core.mail import send_mail
+from django.http import HttpResponse
 from datetime import datetime, timedelta
 from rest_framework.exceptions import PermissionDenied
 
@@ -108,6 +112,27 @@ class UserPostListView(APIView):
             'TenDaysAverage': average_achievement_rate
         }, status=status.HTTP_200_OK)
 
+### 보고싶어 이메일 발송
+class MissEmailNotificationView(APIView):
+    def get(self, request, user_id):
+        user_profile = get_object_or_404(CustomUser, id=user_id)
+        
+        user_name = user_profile.username  
+
+        email_subject = '< 다했슈로부터 보고싶어 알림이 도착했습니다! >'
+        email_message = f'{user_name}님께서 보호자님의 연락을 기다리고 있습니다.\n빠른 연락을 부탁드립니다 :)\n\nfrom 다했슈'
+        from_email = 'kmy737785@gmail.com' #발송할 비즈니스 이메일로 변경해야함
+        
+        recipient_list = [user_profile.email]
+
+        send_mail(
+            email_subject,
+            email_message,
+            from_email,
+            recipient_list,
+            fail_silently=False,
+        )
+        return Response({'message': '보고싶어 알림이 성공적으로 전송되었습니다.'})
 
 ###한페이지뷰(사용자의 특정 한 페이지 조회 (게시물 id 이용))
 class PostDetailView(APIView):
