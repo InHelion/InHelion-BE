@@ -157,21 +157,23 @@ class MissEmailNotificationView(APIView):
         
         user_name = user_profile.username  
 
-        email_subject = '< 다했슈로부터 보고싶어 알림이 도착했습니다! >'
-        email_message = f'{user_name}님께서 보호자님의 연락을 기다리고 있습니다.\n빠른 연락을 부탁드립니다 :)\n\nfrom 다했슈'
-        from_email = 'dahaessyu8@gmail.com' #발송할 비즈니스 이메일
-        
+        email_subject = '< 다햇슈로부터 보고싶어 알림이 도착했습니다! >'
+        email_message = f'{user_name}님께서 보호자님의 연락을 기다리고 있습니다.\n빠른 연락을 부탁드립니다 :)\n\nfrom 다햇슈'
+        from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [user_profile.email]
 
-        send_mail(
-            email_subject,
-            email_message,
-            from_email,
-            recipient_list,
-            fail_silently=False,
-        )
-        return Response({'message': '보고싶어 알림이 성공적으로 전송되었습니다.'})
+        email = EmailMessage(email_subject, email_message, from_email, recipient_list)
+        email.content_subtype = "plain"
+        email.encoding = 'utf-8'
 
+        try:
+            email.send()
+            print(f"Email sent to {user_profile.email}")
+        except smtplib.SMTPException as e:
+            print("Error: unable to send email", e)
+
+        return Response({'message': '보고싶어 알림이 성공적으로 전송되었습니다.'})
+    
 ###한페이지뷰(사용자의 특정 한 페이지 조회 (게시물 id 이용))
 class PostDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
