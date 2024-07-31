@@ -35,7 +35,7 @@ SECRET_KEY = 'django-insecure-h=et*t8f=lzcxgl0k$j^$44qj7lob4k&*j9385ra*nzg@z!#(0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1', '3.35.65.211', 'dahaessyu.kro.kr']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -71,7 +71,7 @@ MIDDLEWARE = [
 
 
 # CORS 설정 추가
-
+'''
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:8000",
@@ -101,7 +101,16 @@ CORS_ALLOW_HEADERS = [  # 허용할 헤더
 
 CORS_ALLOW_CREDENTIALS = True
 
+'''
 
+CORS_ALLOW_ALL_ORIGINS = True  # 모든 도메인에서의 요청을 허용
+CORS_ALLOW_CREDENTIALS = True
+
+# 또는 특정 도메인만 허용하려면 아래 설정을 사용
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:3000',
+    'http://localhost:8000',
+]
 
 ROOT_URLCONF = 'config.urls'
 
