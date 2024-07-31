@@ -41,7 +41,7 @@ ALLOWED_HOSTS = ['localhost','127.0.0.1', '3.35.65.211', 'dahaessyu.kro.kr']
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
+    #'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
