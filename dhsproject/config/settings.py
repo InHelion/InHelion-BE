@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     #기능 앱 추가
     'users',
     'blog',
@@ -55,7 +56,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     #swagger
     'drf_yasg',
-    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -103,29 +103,10 @@ CORS_ALLOW_CREDENTIALS = True
 
 '''
 
-CORS_ALLOW_ALL_ORIGINS = True  # 모든 도메인에서의 요청을 허용
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
-
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
+CORS_ALLOW_METHODS = ['*']  # 또는 특정 메소드 리스트
+CORS_ALLOW_HEADERS = ['*']  # 또는 특정 헤더 리스트
 
 ROOT_URLCONF = 'config.urls'
 
