@@ -59,7 +59,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # 최상단에 위치할 것
+    #'corsheaders.middleware.CorsMiddleware',  # 최상단에 위치할 것
     'django.middleware.common.CommonMiddleware', # 대부분 기본 옵션으로 들어가있음
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,6 +69,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+'''
 # CORS 설정 추가
 
 CORS_ALLOWED_ORIGINS = [
@@ -99,6 +100,8 @@ CORS_ALLOW_HEADERS = [  # 허용할 헤더
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+'''
 
 ROOT_URLCONF = 'config.urls'
 
@@ -192,7 +195,6 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 }
-
 REST_USE_JWT = True
 
 
