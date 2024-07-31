@@ -78,13 +78,14 @@ CORS_ALLOWED_ORIGINS = [
 ]
 '''
 
-CORS_ORIGIN_WHITELIST = (
-    "https://dahaessyu.kro.kr",
-    "http://localhost:8000",
-    "http://localhost:3000",
-    "http://127.0.0.1:8000"
-    "http://127.0.0.1:3000"
-)
+# CORS 설정 추가
+CORS_ALLOW_ALL_ORIGINS = True  # 모든 도메인에서의 요청을 허용
+
+# 또는 특정 도메인만 허용하려면 아래 설정을 사용
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:8000',
+    'http://localhost:3000',
+]
 
 CORS_ALLOW_METHODS = [  # 허용할 옵션
     'DELETE',
