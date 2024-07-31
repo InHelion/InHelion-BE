@@ -35,7 +35,7 @@ SECRET_KEY = 'django-insecure-h=et*t8f=lzcxgl0k$j^$44qj7lob4k&*j9385ra*nzg@z!#(0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost','127.0.0.1', '3.35.65.211', 'dahaessyu.kro.kr']
 
 
 # Application definition
@@ -69,18 +69,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-'''
-CORS_ALLOWED_ORIGINS = [
-    "https://dahaessyu.kro.kr",
-    'http://127.0.0.1:3000',
-    'http://localhost:8000',
-
-]
-'''
-
 # CORS 설정 추가
-CORS_ALLOW_ALL_ORIGINS = True  # 모든 도메인에서의 요청을 허용
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+    "http://dahaessyu.kro.kr"
+]
 
 CORS_ALLOW_METHODS = [  # 허용할 옵션
     'DELETE',
@@ -181,10 +176,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',  # 인증된 요청인지 확인
-        #'rest_framework.permissions.AllowAny',  # 누구나 접근 가능 
-				# (기본적으로 누구나 접근 가능하게 설정하고, 인증된 요청인지 확인하는 api를 따로 지정하게 하려면 
-				# 이 옵션을 위의 옵션 대신 켜주어도 됩니다!)
+        'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -200,6 +192,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
 REST_USE_JWT = True
 
 
