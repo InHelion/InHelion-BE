@@ -70,7 +70,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://dahaessyu.kro.kr/",
+    "https://dahaessyu.kro.kr",
     'http://127.0.0.1:3000',
     'http://localhost:8000',
 ]
