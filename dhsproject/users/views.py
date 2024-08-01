@@ -147,7 +147,7 @@ def check_identifier(request):
     identifier = request.data.get('identifier', None)
     
     if identifier and CustomUser.objects.filter(identifier=identifier).exists():
-        return Response({'identifier': '이미 사용중인 아이디입니다!'}, status=status.HTTP_200_OK)
+        return Response({'identifier': '이미 사용중인 아이디입니다!'}, status=status.HTTP_409_CONFLICT)
     
     return Response({'identifier': '사용 가능한 아이디입니다!'}, status=status.HTTP_200_OK)
 
@@ -159,6 +159,6 @@ def check_email(request):
     email = request.data.get('email', None)
     
     if email and CustomUser.objects.filter(email=email).exists():
-        return Response({'email': '이미 사용중인 이메일입니다!'}, status=status.HTTP_200_OK)
+        return Response({'email': '이미 사용중인 이메일입니다!'}, status=status.HTTP_409_CONFLICT)
     
     return Response({'email': '사용 가능한 이메일입니다!'}, status=status.HTTP_200_OK)
