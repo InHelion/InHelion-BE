@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
@@ -116,30 +117,35 @@ def logout(request):
 
 #####사용자 정보 조회, 정보 수정#####
 class ProfileUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         operation_description="사용자 정보 조회 api 입니다.",
         operation_summary="사용자 정보 조회", 
-        responses={200: UserSerializer, 404: "Not Found"}
+        responses={200: UserSerializer, 403: "권한 없음"}
     )
-    def get(self, request, pk):  # 사용자 조회
-        user = get_object_or_404(CustomUser, pk=pk)
-        serializer = UserSerializer(user)
+    def get(self, request):
+        serializer = UserSerializer(request.user)
         return Response(serializer.data)
     
     @swagger_auto_schema(
         operation_description="사용자 정보 수정 api 입니다.",
         operation_summary="사용자 정보 수정", 
         request_body=UserSerializer,
-        responses={200: "User updated successfully", 400: "Bad Request", 404: "Not Found"}
+        responses={200: "User updated successfully", 400: "Bad Request", 403: "권한 없음"}
     )
-    def put(self, request, pk):  # 사용자 정보 업데이트
-        user = get_object_or_404(CustomUser, pk=pk)
-        serializer = UserSerializer(user, data=request.data, partial=True)
+    def put(self, request):
+        serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "User updated successfully", "data": serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+
+
+
+
 # ID 중복검사 버튼
 @api_view(['POST'])
 @permission_classes([AllowAny])
