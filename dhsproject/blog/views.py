@@ -3,8 +3,10 @@ from .models import Post, Comment
 from users.models import CustomUser
 from django.contrib.auth.models import User
 from .serializers import PostCreateSerializer, PostDetailSerializer, PostListSerializer,CommentSerializer
+from users.serializers import UserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import AuthenticationFailed
 from django.shortcuts import get_object_or_404, redirect
 from django.core.mail import send_mail
 from django.http import HttpResponse
@@ -15,7 +17,6 @@ from django.core.mail import EmailMessage
 import smtplib
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
 
 #####게시물 생성#####
 class PostCreateView(generics.CreateAPIView):
@@ -255,16 +256,19 @@ class CommentListView(generics.ListAPIView):
 
 #####보고싶어 버튼#####
 class MissEmailNotificationView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
     @swagger_auto_schema(
         operation_description="사용자에게 '보고싶어' 이메일 알림 전송 API 입니다.",
         operation_summary="보고싶어 버튼",
         responses={200: "Success", 404: "Not Found"}
     )
-    def get(self, request, user_id):
+    def get(self, request):
+        user_id = request.user.id
         user_profile = get_object_or_404(CustomUser, id=user_id)
         
         user_name = user_profile.username  
+
 
         email_subject = '< 다햇슈로부터 보고싶어 알림이 도착했습니다! >'
         email_message = f'{user_name}님께서 보호자님의 연락을 기다리고 있습니다.\n빠른 연락을 부탁드립니다 :)\n\nfrom 다햇슈'
