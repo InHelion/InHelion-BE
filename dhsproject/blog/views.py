@@ -111,7 +111,7 @@ class CommentCreateView(generics.CreateAPIView):
         post = Post.objects.get(id=post_id)
         comment = serializer.save(user=self.request.user, post=post)
         if comment.protector:
-            comment.content = f" [보호자] | {comment.content}"
+            comment.content = f"{comment.content}"
         comment.save()
 
     @swagger_auto_schema(
