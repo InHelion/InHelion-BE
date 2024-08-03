@@ -190,7 +190,7 @@ class UserPostListView(APIView):
     )
     def get(self, request):
         # 게시물을 날짜 기준 오름차순으로 정렬
-        posts = Post.objects.filter(user=request.user).order_by('date')
+        posts = Post.objects.filter(user=request.user).order_by('-date')[:10]
         serializer = PostListSerializer(posts, many=True)
 
         # 최근 10개의 게시물 기준 평균 달성률 계산
